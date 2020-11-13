@@ -31,6 +31,19 @@ public class LikedMovieFacadeTest {
        emf = EMF_Creator.createEntityManagerFactoryForTest();
        facade = LikedMovieFacade.getFacadeExample(emf);
        remoteFacade = RemoteServerFacade.getRemoteServerFacade(emf);
+               EntityManager em = emf.createEntityManager();
+
+               try {
+
+         User u = new User("bobby", "123456");
+            em.getTransaction().begin();
+         em.persist(u);
+         em.getTransaction().commit();
+
+               }
+                finally {
+            em.close();
+        }
     }
 
     @AfterAll
@@ -47,6 +60,7 @@ public class LikedMovieFacadeTest {
             User u = new User("bobby", "123456");
             em.getTransaction().begin();
             em.createNamedQuery("LikedMovie.deleteAllRows").executeUpdate();
+      
             em.persist(new LikedMovie("Some txt"));
             em.persist(new LikedMovie("aaa"));
 
