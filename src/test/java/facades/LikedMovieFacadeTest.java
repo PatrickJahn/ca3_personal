@@ -1,7 +1,8 @@
 package facades;
 
 import utils.EMF_Creator;
-import entities.RenameMe;
+import entities.LikedMovie;
+import entities.User;
 import errorhandling.API_Exception;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -16,19 +17,19 @@ import org.junit.jupiter.api.Test;
 
 //Uncomment the line below, to temporarily disable this test
 //@Disabled
-public class FacadeExampleTest {
+public class LikedMovieFacadeTest {
 
     private static EntityManagerFactory emf;
-    private static FacadeExample facade;
+    private static LikedMovieFacade facade;
     private static RemoteServerFacade remoteFacade;
 
-    public FacadeExampleTest() {
+    public LikedMovieFacadeTest() {
     }
 
     @BeforeAll
     public static void setUpClass() {
        emf = EMF_Creator.createEntityManagerFactoryForTest();
-       facade = FacadeExample.getFacadeExample(emf);
+       facade = LikedMovieFacade.getFacadeExample(emf);
        remoteFacade = RemoteServerFacade.getRemoteServerFacade(emf);
     }
 
@@ -43,10 +44,11 @@ public class FacadeExampleTest {
     public void setUp() {
         EntityManager em = emf.createEntityManager();
         try {
+            User u = new User("bobby", "123456");
             em.getTransaction().begin();
-            em.createNamedQuery("RenameMe.deleteAllRows").executeUpdate();
-            em.persist(new RenameMe("Some txt", "More text"));
-            em.persist(new RenameMe("aaa", "bbb"));
+            em.createNamedQuery("LikedMovie.deleteAllRows").executeUpdate();
+            em.persist(new LikedMovie("Some txt"));
+            em.persist(new LikedMovie("aaa"));
 
             em.getTransaction().commit();
         } finally {
@@ -72,6 +74,13 @@ public class FacadeExampleTest {
           String films = remoteFacade.getAllFilmsParallel();
            
         assertEquals(true, films.contains("A New Hope"), "Expects to have the movie title A New Hope");
+    }
+    
+      @Test
+    public void testaddLikedMovie() throws IOException, InterruptedException, ExecutionException, API_Exception {
+          
+          LikedMovie m = facade.addLikedMovie("bobby", "Some url");
+        assertEquals(3, facade.getRenameMeCount(), "Expects to have the movie title A New Hope");
     }
 
 }

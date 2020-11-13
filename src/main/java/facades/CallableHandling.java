@@ -8,6 +8,7 @@ package facades;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dto.characterDTO;
+import dto.filmDTO;
 import dto.planetDTO;
 import java.util.concurrent.Callable;
 import utils.HttpUtils;
@@ -56,6 +57,25 @@ import utils.HttpUtils;
             characterDTO charactedto = GSON.fromJson(data, characterDTO.class);
                 
             return charactedto;
+        }
+        
+      }
+
+        class filmHandler implements Callable<filmDTO>{
+        Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+        String filmUrl;
+        public filmHandler(int number){
+          
+            this.filmUrl = "https://swapi.dev/api/films/" + number +"/";
+        }
+        
+        @Override
+        public filmDTO call() throws Exception {
+     
+            String data = HttpUtils.fetchData(filmUrl);
+            filmDTO filmdto = GSON.fromJson(data, filmDTO.class);
+           
+            return filmdto;
         }
         
     }

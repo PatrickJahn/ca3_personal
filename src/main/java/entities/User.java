@@ -35,6 +35,12 @@ public class User implements Serializable {
     @JoinColumn(name = "role_name", referencedColumnName = "role_name")})
   @ManyToMany
   private List<Role> roleList = new ArrayList<>();
+  
+    @ManyToMany
+    @JoinTable(name = "movies_like", 
+  joinColumns = @JoinColumn(name = "user_name", referencedColumnName = "user_name"), 
+  inverseJoinColumns = @JoinColumn(name = "url", referencedColumnName = "url"))
+  private List<LikedMovie> likedMovies = new ArrayList<>();
 
   public List<String> getRolesAsStrings() {
     if (roleList.isEmpty()) {
@@ -60,6 +66,20 @@ public class User implements Serializable {
   }
 
 
+  
+  public void addLikedMovie(LikedMovie m){
+      likedMovies.add(m);
+  }
+  
+   public List<String> getLikedMovies(){
+       List<String> urls = new ArrayList();
+      for (LikedMovie m : likedMovies){
+          urls.add(m.getUrl());
+      }
+      return urls;
+  }
+  
+  
   public String getUserName() {
     return userName;
   }

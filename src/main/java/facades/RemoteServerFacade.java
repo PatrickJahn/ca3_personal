@@ -150,4 +150,40 @@ public class RemoteServerFacade {
          
          return allCharacters;    
      }
+    
+    
+    /** EXTRA METODE FOR CA3 personlig **/ 
+    
+     public String getAllFilmsParallel2() throws IOException, InterruptedException, ExecutionException, API_Exception{
+         
+        ExecutorService executor = Executors.newCachedThreadPool();
+ 
+      List<combinedDTO> allFilmsData = new ArrayList();
+
+        List<Integer> movieNumbers = new ArrayList<>();
+        for (int i = 1; i < 7; i++){
+            movieNumbers.add(i);
+        }
+         List<filmDTO> allFilms = giveThreadsWorkGetFilms(movieNumbers, executor);
+         
+        
+        return GSON.toJson(allFilms);
+    }
+    
+     
+       private List<filmDTO> giveThreadsWorkGetFilms(List<Integer> movieNumbers, ExecutorService executor) throws InterruptedException, ExecutionException {
+         
+          List<Future<String>> planetFutures = new ArrayList<>();
+          List<filmDTO> allFilms = new ArrayList<>();
+          
+          for (int i : movieNumbers){
+            Future future = executor.submit(new filmHandler(i));
+            planetFutures.add(future);
+        }
+             for (Future f : planetFutures){
+                 allFilms.add((filmDTO) f.get());        
+         }
+         
+         return allFilms;    
+     }
 }

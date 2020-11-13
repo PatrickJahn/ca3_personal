@@ -1,6 +1,6 @@
 package rest;
 
-import entities.RenameMe;
+import entities.LikedMovie;
 import entities.Role;
 import entities.User;
 import utils.EMF_Creator;
@@ -29,7 +29,7 @@ public class RenameMeResourceTest {
 
     private static final int SERVER_PORT = 7777;
     private static final String SERVER_URL = "http://localhost/jpareststarter/api";
-    private static RenameMe r1, r2;
+    private static LikedMovie r1, r2;
 
     static final URI BASE_URI = UriBuilder.fromUri(SERVER_URL).port(SERVER_PORT).build();
     private static HttpServer httpServer;
@@ -67,11 +67,12 @@ public class RenameMeResourceTest {
     @BeforeEach
     public void setUp() {
         EntityManager em = emf.createEntityManager();
-        r1 = new RenameMe("Some txt", "More text");
-        r2 = new RenameMe("aaa", "bbb");
+        User u = new User("Bobby", "123456");
+        r1 = new LikedMovie("Some txt");
+        r2 = new LikedMovie("aaa");
         try {
             em.getTransaction().begin();
-            em.createNamedQuery("RenameMe.deleteAllRows").executeUpdate();
+            em.createNamedQuery("LikedMovie.deleteAllRows").executeUpdate();
             em.persist(r1);
             em.persist(r2);
             em.getTransaction().commit();
@@ -84,6 +85,7 @@ public class RenameMeResourceTest {
             Role adminRole = new Role("admin");
             User user = new User("user", "test");
             user.addRole(userRole);
+            user.addLikedMovie(r1);
             User admin = new User("admin", "test");
             admin.addRole(adminRole);
             User both = new User("user_admin", "test");
@@ -149,6 +151,20 @@ public class RenameMeResourceTest {
     
      @Test
     public void testFilms() throws Exception {  
+              login("user_admin", "test");
+        given()
+                .contentType("application/json")
+                .accept(ContentType.JSON)
+                .header("x-access-token", securityToken)
+                .when()                
+                .get("/info/filmsparallel").then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("title", equalTo("A New Hope"));
+    }
+    
+     @Test
+    public void getLikedMovies() throws Exception {  
               login("user_admin", "test");
         given()
                 .contentType("application/json")
