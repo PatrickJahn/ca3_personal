@@ -36,7 +36,7 @@ public class DemoResource {
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final LikedMovieFacade FACADE =  LikedMovieFacade.getFacadeExample(EMF);
-   private static final RemoteServerFacade remoteFACADE =  RemoteServerFacade.getRemoteServerFacade(EMF);
+   private final RemoteServerFacade remoteFACADE =  RemoteServerFacade.getRemoteServerFacade(EMF);
     
     @Context
     private UriInfo context;
@@ -98,7 +98,6 @@ public class DemoResource {
     }
     
      @GET
-     @RolesAllowed({"admin","user"})
     @Produces(MediaType.APPLICATION_JSON)
     @Path("films")
     public String getFromServers() throws IOException, API_Exception {
@@ -148,10 +147,7 @@ public class DemoResource {
     public String getFromServersAll() throws IOException, API_Exception, InterruptedException, ExecutionException {
          EntityManager em = EMF.createEntityManager();
                  String thisuser = securityContext.getUserPrincipal().getName();
-       User u = em.find(User.class,thisuser);
-          System.out.println(u.getLikedMovies());
-          
-          
+       User u = em.find(User.class,thisuser);          
        
         return remoteFACADE.getAllFilmsParallel2(u.getLikedMovies());
     }
