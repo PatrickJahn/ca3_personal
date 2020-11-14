@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/PatrickJahn/ca3_personal.svg?branch=master)](https://travis-ci.org/PatrickJahn/ca3_personal)
 
-# OBS Link til frontend del: 
+# OBS Link til frontend del:  https://github.com/PatrickJahn/ca3_pesonal_frontend
 
 ## CA3 - How to use
 ### Preconditions
