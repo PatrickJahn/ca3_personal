@@ -10,6 +10,7 @@ import com.google.gson.GsonBuilder;
 import dto.characterDTO;
 import dto.filmDTO;
 import dto.planetDTO;
+import java.util.List;
 import java.util.concurrent.Callable;
 import utils.HttpUtils;
 
@@ -64,8 +65,9 @@ import utils.HttpUtils;
         class filmHandler implements Callable<filmDTO>{
         Gson GSON = new GsonBuilder().setPrettyPrinting().create();
         String filmUrl;
-        public filmHandler(int number){
-          
+        List<String> likedUrl;
+        public filmHandler(int number, List<String> likedUrl){
+          this.likedUrl = likedUrl;
             this.filmUrl = "https://swapi.dev/api/films/" + number +"/";
         }
         
@@ -75,6 +77,11 @@ import utils.HttpUtils;
             String data = HttpUtils.fetchData(filmUrl);
             filmDTO filmdto = GSON.fromJson(data, filmDTO.class);
            
+            if (likedUrl.contains(filmUrl)){
+                filmdto.setLiked();
+                System.out.println("LIKED");
+            }
+              
             return filmdto;
         }
         

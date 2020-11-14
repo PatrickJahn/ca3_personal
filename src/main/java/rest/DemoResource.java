@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import dto.filmDTO;
 import entities.User;
 import errorhandling.API_Exception;
 import facades.LikedMovieFacade;
@@ -116,7 +117,7 @@ public class DemoResource {
     @Path("likefilm")
     public String likeMovie(String jsonString) {
         
-   JsonObject json = JsonParser.parseString(jsonString).getAsJsonObject();
+        JsonObject json = JsonParser.parseString(jsonString).getAsJsonObject();
            String username = json.get("username").getAsString();
            String url = json.get("url").getAsString();
       
@@ -124,13 +125,35 @@ public class DemoResource {
            return "{\"msg\":\"Movie with url " + url + " was liked by " + username + " \"}";
     }
     
-     @GET
-     @RolesAllowed({"admin","user"})
+    
+     @POST
+    @RolesAllowed({"admin","user"})
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Path("dislikefilm")
+    public String dislikeMovie(String jsonString) {
+        
+        JsonObject json = JsonParser.parseString(jsonString).getAsJsonObject();
+           String username = json.get("username").getAsString();
+           String url = json.get("url").getAsString();
+      
+            FACADE.removeLikedMovie(username, url);
+           return "{\"msg\":\"Movie with url " + url + " was disliked by " + username + " \"}";
+    }
+    
+    @GET
+    @RolesAllowed({"admin","user"})
     @Produces(MediaType.APPLICATION_JSON)
     @Path("allfilms")
     public String getFromServersAll() throws IOException, API_Exception, InterruptedException, ExecutionException {
-
-        return remoteFACADE.getAllFilmsParallel2();
+         EntityManager em = EMF.createEntityManager();
+                 String thisuser = securityContext.getUserPrincipal().getName();
+       User u = em.find(User.class,thisuser);
+          System.out.println(u.getLikedMovies());
+          
+          
+       
+        return remoteFACADE.getAllFilmsParallel2(u.getLikedMovies());
     }
     
 }   

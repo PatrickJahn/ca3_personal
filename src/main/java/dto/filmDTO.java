@@ -21,14 +21,21 @@ public class filmDTO {
     List<String> characters = new ArrayList(); // Liste af urls til hver person
     List<String> planets = new ArrayList(); // Liste af urls til hver planet
     String release_date;
+    Boolean liked;
 
     public filmDTO(String title, String episode_id, String opening_crawl, String release_date) {
         this.title = title;
+        this.liked = false;
         this.episode_id = episode_id;
         this.opening_crawl = opening_crawl;
         this.release_date = release_date;
     }
 
+    
+    
+    public void setLiked(){
+        this.liked = true;
+    }
     public String getTitle() {
         return title;
     }

@@ -71,6 +71,20 @@ public class User implements Serializable {
       likedMovies.add(m);
   }
   
+   public void removeLikedMovie(LikedMovie m){
+       
+       
+       for (LikedMovie movie : likedMovies){
+           if (movie.getUrl().equals(m.getUrl())){
+               likedMovies.remove(movie);
+               return;
+           }
+       }
+      
+         System.out.println(likedMovies);
+     
+  }
+  
    public List<String> getLikedMovies(){
        List<String> urls = new ArrayList();
       for (LikedMovie m : likedMovies){
@@ -78,6 +92,8 @@ public class User implements Serializable {
       }
       return urls;
   }
+   
+   
   
   
   public String getUserName() {

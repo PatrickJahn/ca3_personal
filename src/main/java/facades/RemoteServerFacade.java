@@ -15,13 +15,14 @@ import errorhandling.API_Exception;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import utils.HttpUtils;
+import entities.LikedMovie;
 
 /**
  *
@@ -154,7 +155,7 @@ public class RemoteServerFacade {
     
     /** EXTRA METODE FOR CA3 personlig **/ 
     
-     public String getAllFilmsParallel2() throws IOException, InterruptedException, ExecutionException, API_Exception{
+     public String getAllFilmsParallel2(List<String> likedUrls) throws IOException, InterruptedException, ExecutionException, API_Exception{
          
         ExecutorService executor = Executors.newCachedThreadPool();
  
@@ -164,24 +165,26 @@ public class RemoteServerFacade {
         for (int i = 1; i < 7; i++){
             movieNumbers.add(i);
         }
-         List<filmDTO> allFilms = giveThreadsWorkGetFilms(movieNumbers, executor);
-         
+         List<filmDTO> allFilms = giveThreadsWorkGetFilms(movieNumbers, executor, likedUrls);
+        
         
         return GSON.toJson(allFilms);
     }
     
      
-       private List<filmDTO> giveThreadsWorkGetFilms(List<Integer> movieNumbers, ExecutorService executor) throws InterruptedException, ExecutionException {
+       private List<filmDTO> giveThreadsWorkGetFilms(List<Integer> movieNumbers, ExecutorService executor, List<String> likedUrls) throws InterruptedException, ExecutionException {
          
           List<Future<String>> planetFutures = new ArrayList<>();
           List<filmDTO> allFilms = new ArrayList<>();
-          
+        
           for (int i : movieNumbers){
-            Future future = executor.submit(new filmHandler(i));
+            Future future = executor.submit(new filmHandler(i, likedUrls));
             planetFutures.add(future);
         }
              for (Future f : planetFutures){
-                 allFilms.add((filmDTO) f.get());        
+                 filmDTO film = (filmDTO) f.get();
+                 
+                 allFilms.add(film);        
          }
          
          return allFilms;    

@@ -63,4 +63,18 @@ public class LikedMovieFacade {
        return m; 
     }
 
+public LikedMovie removeLikedMovie(String userName, String url){
+                   EntityManager em = emf.createEntityManager();
+   
+           LikedMovie m = new LikedMovie(url);
+          User user = em.find(User.class, userName);
+          user.removeLikedMovie(m);
+          
+          em.getTransaction().begin(); 
+          em.merge(user);
+          em.getTransaction().commit();
+       
+       return m; 
+    }
+
 }
