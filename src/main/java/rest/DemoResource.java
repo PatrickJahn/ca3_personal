@@ -46,8 +46,14 @@ public class DemoResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public String getInfoForAll() {
-        return "{\"msg\":\"Hello anonymous\"}";
+    public Response  getInfoForAll() {
+        return Response.ok()
+               .header("Access-Control-Allow-Origin", "*")
+               .header("Access-Control-Allow-Credentials", "true")
+               .header("Access-Control-Allow-Headers","origin, content-type, accept, authorization")
+               .header("Access-Control-Allow-Methods","GET, POST, PUT, DELETE, OPTIONS, HEAD")
+               .entity( "{\"msg\":\"Hello anonymous\"}").build();
+   
     }
 
     //Just to verify if the database is setup
