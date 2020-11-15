@@ -56,10 +56,6 @@ public class LoginEndpoint {
             responseJson.addProperty("username", username);
             responseJson.addProperty("token", token);
             return Response.ok()
-               .header("Access-Control-Allow-Origin", "*")
-               .header("Access-Control-Allow-Credentials", "true")
-               .header("Access-Control-Allow-Headers","origin, content-type, accept, authorization")
-               .header("Access-Control-Allow-Methods","GET, POST, PUT, DELETE, OPTIONS, HEAD")
                .entity(new Gson().toJson(responseJson)).build();
                
                
